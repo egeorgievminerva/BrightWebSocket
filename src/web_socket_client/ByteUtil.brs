@@ -144,3 +144,13 @@ end function
 function xor(a as integer, b as integer) as integer
     return (a or b) and not (a and b)
 end function
+
+function bit_at_position(a as integer, position as integer) as boolean
+    position_num = 1
+    position_num <<= position - 1
+    if (a and position_num) > 0
+        return true
+    else
+        return false
+    end if
+end function

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="Main" extends="Scene">
 
+	<interface>
+		<field id="message" type="string" alias="messageLabel.text" />
+	</interface>
+
 	<children>
 	
 		<Label
@@ -9,11 +13,22 @@
 			color="0xffffff"
 			font="font:LargeBoldSystemFont"
 			width="1280"
-			height="720"
+			height="140"
 			translation="[0,0]"
 			horizAlign="center"
 			vertAlign="center" />
 			
+		<Label
+			id="messageLabel"
+			inheritParentOpacity="false"
+			width="1200"
+			height="540"
+			horizAlign="left"
+			translation="[40,160]"
+			leadingEllipsis="true"
+			wrap="true">
+			<Font role="font" uri="font:SystemFontFile" size="18" />
+        </Label>
 	</children>
 	
 	<script type="text/brightscript" uri="pkg:/source/Main.brs" />

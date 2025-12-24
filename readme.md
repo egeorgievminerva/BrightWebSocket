@@ -30,9 +30,9 @@ Example:
 ```brightscript
 function init() as void
     m.ws = createObject("roSGNode", "WebSocketClient")
-    m.ws.observeField("on_open", "on_open")
-    m.ws.observeField("on_message", "on_message")
-    m.ws.open = "ws://echo.websocket.org/"
+    m.ws.observeField("on_websocket_open", "on_open")
+    m.ws.observeField("on_websocket_message", "on_message")
+    m.ws.open = "wss://echo.websocket.org/"
 end function
 
 function on_open(event as object) as void

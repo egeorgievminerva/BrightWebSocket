@@ -10,20 +10,38 @@
 
     <interface>
         <!-- Fields -->
-        <field id="on_open" type="assocarray" alwaysNotify="true" />
-        <field id="on_close" type="string" alwaysNotify="true" />
-        <field id="on_message" type="assocarray" alwaysNotify="true" />
-        <field id="on_error" type="assocarray" alwaysNotify="true" />
+        <field id="on_websocket_open" type="assocarray" alwaysNotify="true" />
+        <field id="on_websocket_close" type="assocarray" alwaysNotify="true" />
+        <field id="on_websocket_message" type="assocarray" alwaysNotify="true" />
+        <field id="on_websocket_error" type="assocarray" alwaysNotify="true" />
         <field id="STATE_CONNECTING" type="integer" />
         <field id="STATE_OPEN" type="integer" />
         <field id="STATE_CLOSING" type="integer" />
         <field id="STATE_CLOSED" type="integer" />
-        <field id="ready_state" type="integer" alwaysNotify="true" />
+        <field id="websocket_ready_state" type="integer" alwaysNotify="true" />
         <field id="protocols" type="array" alwaysNotify="true" />
         <field id="headers" type="array" alwaysNotify="true" />
         <field id="secure" type="boolean" alwaysNotify="true" />
         <field id="buffer_size" type="integer" alwaysNotify="true" />
         <field id="log_level" type="string" alwaysNotify="true" />
+
+        <!-- connect_timeout in seconds is deadline for the Web-Socket hadnshake  -->
+        <field id="connect_timeout" type="integer" value="10"/>
+        <!-- close_timeout in seconds is deadline for greaceful Web-Socket close.
+             If Web-Socket close messages are not exchanged within the close_timeout,
+             the TCP socked is closed and the Web-Socket is considered closed. -->
+        <field id="close_timeout" type="integer" value="5"/>
+        <!-- ping_interval in seconds. On 0 ping-pong is disabled,
+             otherwise automatic ping message will be sent on the specified interval.-->
+        <field id="ping_interval" type="integer" value="0"/>
+        <!-- pong_max_missed - count of missed PONG responses before closing the Web-Socket -->
+        <field id="pong_max_missed" type="integer" value="3"/>
+        <!-- pong_timeout in seconds is the deadline to receive the pong response
+             from the server if ping-pong is enabled -->
+        <field id="pong_timeout" type="integer" value="5"/>
+        <!-- Configure server for RSA encryption of the pre-master secret -->
+        <field id="rsa_service_info" type="assocarray" />
+
         <!-- Functions -->
         <field id="open" type="string" alwaysNotify="true" />
         <field id="send" type="array" alwaysNotify="true" />
@@ -32,7 +50,7 @@
 
     <script type="text/brightscript" uri="pkg:/components/web_socket_client/WebSocketClient.brs" />
     <script type="text/brightscript" uri="pkg:/components/web_socket_client/WebSocketClientTask.brs" />
-    <script type="text/brightscript" uri="pkg:/components/web_socket_client/Logger.brs" />
     <script type="text/brightscript" uri="pkg:/components/web_socket_client/ByteUtil.brs" />
+    <script type="text/brightscript" uri="pkg:/components/web_socket_client/Logger.brs" />
     <script type="text/brightscript" uri="pkg:/components/web_socket_client/TlsUtil.brs" />
 </component>

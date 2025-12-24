@@ -5,8 +5,9 @@
 ' Internal logging utility
 
 ' Initialize a logging utility
-function Logger() as object
+function Logger(tag as string) as object
     log = {}
+    log.tag = tag
     log.FATAL = -2
     log.WARN = -1
     log.INFO = 0
@@ -18,17 +19,22 @@ function Logger() as object
 
     ' Log a message
     ' @param level log level string or integer
-    ' @param msg message to print
-    log.printl = function (level as object, msg as object) as void
-        if m._parse_level(level) > m.log_level
+    ' @param tag first part of the message
+    ' @param msg optional second part of the message to print
+    log.printl = sub(level as object, tag as string, msg = invalid as dynamic) as void
+        if level > m.log_level
             return
         end if
-        print "[" + m._level_to_string(level) + "] " + msg
-    end function
+        if msg = invalid
+            msg = tag
+            tag = m.tag
+        end if
+        print m._curent_timestamp() + "[" + m._level_to_string(level) + "] " + tag + ": " + msg
+    end sub
 
     ' Parse level to a string
     ' @param level string or integer level
-    log._level_to_string = function (level as object) as string
+    log._level_to_string = function(level as object) as string
         if type(level) = "roString" or type(level) = "String"
             level = m._parse_level(level)
         end if
@@ -42,14 +48,14 @@ function Logger() as object
             return "DEBUG"
         else if level = 2
             return "EXTRA"
-        else if level = 3
+        else
             return "VERBOSE"
         end if
     end function
 
     ' Parse level to an integer
     ' @param level string or integer level
-    log._parse_level = function (level as object) as integer
+    log._parse_level = function(level as object) as integer
         level_string = level.toStr()
         log_level = 0
         if level_string = "FATAL" or level_string = "-2"
@@ -69,23 +75,24 @@ function Logger() as object
     end function
 
     ' Set the log level
-    log.set_log_level = function (level as string) as void
+    log.set_log_level = sub(level as string) as void
         m.log_level = m._parse_level(level)
+    end sub
+
+    log._date_time_object = CreateObject("roDateTime")
+    log._curent_timestamp = function() as string
+        dateTime = m._date_time_object
+        dateTime.Mark()
+        dateTime.ToLocalTime()
+
+        hours = dateTime.GetHours().ToStr("%02d")
+        minutes = dateTime.GetMinutes().ToStr("%02d")
+        seconds = dateTime.GetSeconds().ToStr("%02d")
+        milliseconds = dateTime.GetMilliseconds().ToStr("%03d")
+
+        return "[" + hours + ":" + minutes + ":" + seconds + "." + milliseconds + "]"
     end function
 
-    ' Parse Config
-    config_string = readAsciiFile("pkg:/bright_web_socket.json")
-    config = parseJson(config_string)
-    if config <> invalid
-        if config.log_level <> invalid
-            log.log_level = log._parse_level(config.log_level)
-        else
-            log.log_level = log.INFO
-            log.printl(log.WARN, "WebSocketLogger: Missing log_level param in pkg:/bright_web_socket.json")
-        end if
-    else
-        log.log_level = log.INFO
-        log.printl(log.WARN, "WebSocketLogger: Missing pkg:/bright_web_socket.json")
-    end if
+    log.log_level = log.VERBOSE
     return log
 end function
